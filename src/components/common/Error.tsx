@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 
 const ErrorContainer = styled.div`
@@ -15,11 +16,24 @@ const ErrorContainer = styled.div`
     color: skyblue;
   }
 `;
+const SECOND = 3;
 function Error() {
+  const [second, setSecond] = useState(SECOND);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (second <= 0) navigate("/");
+    const Count = () => {
+      setSecond((prev) => prev - 1);
+    };
+    const interval = setInterval(Count, 1000);
+    return () => clearInterval(interval);
+  }, [second, navigate]);
+
   return (
     <ErrorContainer>
       <p>Error!</p>
-      <Link to={"/"}>{`Go to Homepage`}</Link>
+      <Link to={"/"}>{`Go to Homepage in ${second}`}</Link>
     </ErrorContainer>
   );
 }

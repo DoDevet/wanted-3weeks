@@ -1,7 +1,12 @@
 import IssueDetail from "../components/IssueDetail";
+import IssueDetailProvider from "../contexts/issueDetailContext";
 
 function DetailPage() {
-  return <IssueDetail />;
+  return (
+    <IssueDetailProvider>
+      <IssueDetail />
+    </IssueDetailProvider>
+  );
 }
 
 export default DetailPage;

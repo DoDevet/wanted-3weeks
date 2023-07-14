@@ -1,13 +1,9 @@
 import Content from "./Content";
 import IssueItem from "../common/IssueItem";
-import { useLocation } from "react-router-dom";
-import {
-  useIssueDetail,
-  useIssueDetailDIspatch,
-} from "../../contexts/issueContext";
 import Loading from "../common/Loading";
-import { useCallback, useEffect } from "react";
 import { styled } from "styled-components";
+import { useIssueDetail } from "../../contexts/issueDetailContext";
+import Error from "../common/Error";
 
 const IssueDetailContainer = styled.div`
   padding-top: 12px;
@@ -42,31 +38,11 @@ const Items = styled.div`
 `;
 
 function IssueDetail() {
-  const location = useLocation();
   const { data, loading, error } = useIssueDetail();
-  const dispatch = useIssueDetailDIspatch();
-  const diffPage = data?.number !== +location.pathname.replace(/[^0-9]/, "");
-
-  const callbackDispatch = useCallback(
-    (pathname: string) => {
-      if (dispatch && !loading) dispatch(pathname);
-    },
-    [dispatch, loading],
-  );
-
-  useEffect(() => {
-    if (!error && (diffPage || !data)) {
-      callbackDispatch(location.pathname);
-    }
-  }, [callbackDispatch, diffPage, data, location.pathname, error]);
 
   return (
     <IssueDetailContainer>
-      {error ? (
-        <div>Error</div>
-      ) : loading || diffPage ? (
-        <Loading />
-      ) : (
+      {data && (
         <Items>
           <IssueItem
             comments={data.comments}
@@ -79,6 +55,8 @@ function IssueDetail() {
           <Content body={data.body} />
         </Items>
       )}
+      {error && <Error />}
+      {loading && <Loading />}
     </IssueDetailContainer>
   );
 }
